@@ -58,8 +58,17 @@ public class ReservationServlet extends HttpServlet {
             case "cancel":
                 cancelReservation(request, response);
                 break;
-            case "check-availability":
-                checkAvailability(request, response);
+            case "calendar":
+                // viewCalendar(request, response);
+                break;
+            case "pending":
+                listPendingReservations(request, response);
+                break;
+            case "cancelled":
+                listCancelledReservations(request, response);
+                break;
+            case "history":
+                listHistoryReservations(request, response);
                 break;
             default:
                 listMyReservations(request, response);
@@ -97,12 +106,62 @@ public class ReservationServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès refusé");
             return;
         }
+
         List<Reservation> reservations = reservationService.getAllReservations();
         List<Reservation> activeReservations = reservations.stream()
-                .filter(r -> !"CANCELLED".equals(r.getStatus()))
+                .filter(r -> "CONFIRMED".equals(r.getStatus()) || "ACCEPTED".equals(r.getStatus()))
                 .collect(Collectors.toList());
         request.setAttribute("reservations", activeReservations);
+        request.setAttribute("viewType", "active");
         request.getRequestDispatcher("/WEB-INF/views/reservations/list.jsp").forward(request, response);
+    }
+
+    private void listPendingReservations(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        if (!isAdmin(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès refusé");
+            return;
+        }
+
+        List<Reservation> reservations = reservationService.getAllReservations();
+        List<Reservation> pendingReservations = reservations.stream()
+                .filter(r -> "PENDING".equals(r.getStatus()))
+                .collect(Collectors.toList());
+        request.setAttribute("reservations", pendingReservations);
+        request.setAttribute("viewType", "pending");
+        request.getRequestDispatcher("/WEB-INF/views/reservations/pending.jsp").forward(request, response);
+    }
+
+    private void listCancelledReservations(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        if (!isAdmin(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès refusé");
+            return;
+        }
+
+        List<Reservation> reservations = reservationService.getAllReservations();
+        List<Reservation> cancelledReservations = reservations.stream()
+                .filter(r -> "CANCELLED".equals(r.getStatus()))
+                .collect(Collectors.toList());
+        request.setAttribute("reservations", cancelledReservations);
+        request.setAttribute("viewType", "cancelled");
+        request.getRequestDispatcher("/WEB-INF/views/reservations/cancelled.jsp").forward(request, response);
+    }
+
+    private void listHistoryReservations(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        if (!isAdmin(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès refusé");
+            return;
+        }
+
+        List<Reservation> reservations = reservationService.getAllReservations();
+        List<Reservation> historyReservations = reservations.stream()
+                .filter(r -> "COMPLETED".equals(r.getStatus()))
+                .collect(Collectors.toList());
+        request.setAttribute("reservations", historyReservations);
+        request.setAttribute("viewType", "history");
+        request.getRequestDispatcher("/WEB-INF/views/reservations/history.jsp").forward(request, response);
     }
 
     private void listMyReservations(HttpServletRequest request, HttpServletResponse response)

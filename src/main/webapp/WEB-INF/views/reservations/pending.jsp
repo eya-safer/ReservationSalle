@@ -6,11 +6,11 @@
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Admin - All Reservations - SPACE</title>
+            <title>Admin - Pending Reservations - SPACE</title>
             <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
             <style>
+                /* Reuse styles from list.jsp */
                 .main-header {
                     background-color: var(--surface-color);
                     box-shadow: var(--shadow);
@@ -136,25 +136,9 @@
                     display: inline-block;
                 }
 
-                .status-confirmed,
-                .status-accepted {
-                    background: rgba(16, 185, 129, 0.2);
-                    color: #10b981;
-                }
-
                 .status-pending {
                     background: rgba(245, 158, 11, 0.2);
                     color: #f59e0b;
-                }
-
-                .status-cancelled {
-                    background: rgba(239, 68, 68, 0.2);
-                    color: #ef4444;
-                }
-
-                .status-completed {
-                    background: rgba(59, 130, 246, 0.2);
-                    color: #3b82f6;
                 }
 
                 .action-buttons {
@@ -224,6 +208,23 @@
                     color: var(--text-primary);
                     margin-bottom: 0.5rem;
                 }
+
+                .btn-secondary {
+                    background-color: var(--surface-color);
+                    color: var(--text-secondary);
+                    border: 1px solid var(--border-color);
+                }
+
+                .btn-secondary:hover {
+                    background-color: var(--border-color);
+                    color: var(--text-primary);
+                }
+
+                .btn-primary {
+                    background-color: var(--primary-color);
+                    color: #121212;
+                    border: 1px solid var(--primary-color);
+                }
             </style>
         </head>
 
@@ -253,10 +254,10 @@
                 </div>
 
                 <div class="view-tabs mb-4">
-                    <a href="${pageContext.request.contextPath}/reservations/list" class="btn btn-primary me-2">
+                    <a href="${pageContext.request.contextPath}/reservations/list" class="btn btn-secondary me-2">
                         <i class="fa-solid fa-check-circle"></i> Confirmed
                     </a>
-                    <a href="${pageContext.request.contextPath}/reservations/pending" class="btn btn-secondary me-2">
+                    <a href="${pageContext.request.contextPath}/reservations/pending" class="btn btn-primary me-2">
                         <i class="fa-solid fa-hourglass-half"></i> Pending
                     </a>
                     <a href="${pageContext.request.contextPath}/reservations/cancelled" class="btn btn-secondary me-2">
@@ -302,8 +303,7 @@
                                                 <%= reservation.getEndDatetime().toLocalDateTime().format(formatter) %>
                                             </td>
                                             <td>
-                                                <span
-                                                    class="status-badge status-<%= reservation.getStatus().toLowerCase() %>">
+                                                <span class="status-badge status-pending">
                                                     <%= reservation.getStatus() %>
                                                 </span>
                                             </td>
@@ -313,47 +313,27 @@
                                                         class="action-btn btn-view">
                                                         <i class="fa-solid fa-eye"></i> View
                                                     </a>
-                                                    <% if (!"CANCELLED".equals(reservation.getStatus()) &&
-                                                        !"ACCEPTED".equals(reservation.getStatus())) { %>
-                                                        <form
-                                                            action="${pageContext.request.contextPath}/reservations/update-status"
-                                                            method="post" style="display: inline;">
-                                                            <input type="hidden" name="id"
-                                                                value="<%= reservation.getId() %>">
-                                                            <input type="hidden" name="status" value="ACCEPTED">
-                                                            <button type="submit" class="action-btn btn-accept">
-                                                                <i class="fa-solid fa-check"></i> Accept
-                                                            </button>
-                                                        </form>
-                                                        <% } %>
-                                                            <% if (!"CANCELLED".equals(reservation.getStatus())) { %>
-                                                                <form
-                                                                    action="${pageContext.request.contextPath}/reservations/update-status"
-                                                                    method="post" style="display: inline;">
-                                                                    <input type="hidden" name="id"
-                                                                        value="<%= reservation.getId() %>">
-                                                                    <input type="hidden" name="status"
-                                                                        value="CANCELLED">
-                                                                    <button type="submit" class="action-btn btn-cancel"
-                                                                        onclick="return confirm('Cancel this reservation?');">
-                                                                        <i class="fa-solid fa-times"></i> Cancel
-                                                                    </button>
-                                                                </form>
-                                                                <form
-                                                                    action="${pageContext.request.contextPath}/reservations/update-status"
-                                                                    method="post" style="display: inline;">
-                                                                    <input type="hidden" name="id"
-                                                                        value="<%= reservation.getId() %>">
-                                                                    <input type="hidden" name="status"
-                                                                        value="COMPLETED">
-                                                                    <button type="submit" class="action-btn btn-view"
-                                                                        style="background-color: #3b82f6; color: white;"
-                                                                        onclick="return confirm('Mark as Completed?');">
-                                                                        <i class="fa-solid fa-check-double"></i>
-                                                                        Complete
-                                                                    </button>
-                                                                </form>
-                                                                <% } %>
+                                                    <form
+                                                        action="${pageContext.request.contextPath}/reservations/update-status"
+                                                        method="post" style="display: inline;">
+                                                        <input type="hidden" name="id"
+                                                            value="<%= reservation.getId() %>">
+                                                        <input type="hidden" name="status" value="ACCEPTED">
+                                                        <button type="submit" class="action-btn btn-accept">
+                                                            <i class="fa-solid fa-check"></i> Accept
+                                                        </button>
+                                                    </form>
+                                                    <form
+                                                        action="${pageContext.request.contextPath}/reservations/update-status"
+                                                        method="post" style="display: inline;">
+                                                        <input type="hidden" name="id"
+                                                            value="<%= reservation.getId() %>">
+                                                        <input type="hidden" name="status" value="CANCELLED">
+                                                        <button type="submit" class="action-btn btn-cancel"
+                                                            onclick="return confirm('Cancel this reservation?');">
+                                                            <i class="fa-solid fa-times"></i> Cancel
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
@@ -363,9 +343,9 @@
                         </div>
                         <% } else { %>
                             <div class="empty-state">
-                                <i class="fa-regular fa-calendar-xmark"></i>
-                                <h2>No Reservations</h2>
-                                <p>There are currently no active reservations in the system.</p>
+                                <i class="fa-solid fa-hourglass-half"></i>
+                                <h2>No Pending Reservations</h2>
+                                <p>There are currently no reservations waiting for approval.</p>
                             </div>
                             <% } %>
             </div>

@@ -13,8 +13,10 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="C:/Users/Dell/Downloads/jakarta.servlet.jsp-api-3.1.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Dell/Desktop/Jakarta2/projetReservation/src/main/webapp/WEB-INF/lib/mysql-connector-java-8.0.28.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Dell/Desktop/Jakarta2/projetReservation/src/main/webapp/WEB-INF/lib/jakarta.servlet.jsp.jstl-api-3.0.1.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jakarta.servlet.jsp-api-3.1.0.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/mysql-connector-java-8.0.28.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jakarta.servlet.jsp.jstl-api-3.0.1.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jbcrypt-0.4.jar"/>
+
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
